@@ -39,7 +39,7 @@ public final class ResourceMaps {
      * 
      * Equivalent to calling:
      * <p>
-     * <code>new ResourceMap(null, c.getClassLoader(), c.getPackage().getName()
+     * <code>new ResourceMap(parent, c.getClassLoader(), c.getPackage().getName()
      *  + ".resources." + c.getSimpleName());</code>
      * </p>
      * 
