@@ -1,0 +1,7 @@
+glob:.project
+glob:.fbprefs
+glob:.classpath
+glob:.pmd
+glob:build/*
+glob:target/*
+glob:.settings/*
