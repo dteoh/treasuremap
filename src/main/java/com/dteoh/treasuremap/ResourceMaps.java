@@ -16,6 +16,10 @@ import org.jdesktop.application.ResourceMap;
  */
 public final class ResourceMaps {
 
+    private ResourceMaps() {
+        throw new AssertionError();
+    }
+
     /**
      * Creates a {@link ResourceMap} containing all resources for the given
      * class.
@@ -35,8 +39,8 @@ public final class ResourceMaps {
             throw new NullPointerException("Class cannot be null.");
         }
 
-        ResourceMap rmap = new ResourceMap(null, c.getClassLoader(), c
-                .getPackage().getName() + ".resources." + c.getSimpleName());
+        ResourceMap rmap = new ResourceMap(null, c.getClassLoader(),
+                createBundleName(c));
         return rmap;
     }
 
@@ -61,8 +65,8 @@ public final class ResourceMaps {
             throw new NullPointerException("Class cannot be null.");
         }
 
-        ResourceMap rmap = new ResourceMap(parent, c.getClassLoader(), c
-                .getPackage().getName() + ".resources." + c.getSimpleName());
+        ResourceMap rmap = new ResourceMap(parent, c.getClassLoader(),
+                createBundleName(c));
         return rmap;
     }
 
@@ -73,8 +77,9 @@ public final class ResourceMaps {
      *            Classes to create the ResourceMap for.
      * @return The newly created ResourceMap.
      */
-    public static ResourceMap createMulti(final Class<?>... c) {
-        return createMulti(null, c);
+    public static ResourceMap createMulti(final Class<?> c1,
+            final Class<?>... cOthers) {
+        return createMulti(null, c1, cOthers);
     }
 
     /**
@@ -88,24 +93,35 @@ public final class ResourceMaps {
      * @return The newly created ResourceMap.
      */
     public static ResourceMap createMulti(final ResourceMap parent,
-            final Class<?>... c) {
-        if (c == null || c.length == 0) {
+            final Class<?> c1, final Class<?>... cOthers) {
+        if (c1 == null) {
             throw new NullPointerException("Classes cannot be null.");
         }
 
         ClassLoader loader = null;
 
         List<String> bundleNames = new LinkedList<String>();
-        for (Class<?> bundle : c) {
-            if (c == null) {
+        bundleNames.add(createBundleName(c1));
+        for (Class<?> bundle : cOthers) {
+            if (bundle == null) {
                 continue;
             }
             loader = bundle.getClassLoader();
-            bundleNames.add(bundle.getPackage().getName() + ".resources."
-                    + bundle.getSimpleName());
+            bundleNames.add(createBundleName(bundle));
         }
 
         ResourceMap rmap = new ResourceMap(parent, loader, bundleNames);
         return rmap;
+    }
+
+    /**
+     * Used to create the bundle name for the given class.
+     * 
+     * @param c
+     *            Class to create the bundle name for.
+     * @return Bundle name.
+     */
+    private static String createBundleName(final Class<?> c) {
+        return c.getPackage().getName() + ".resources." + c.getSimpleName();
     }
 }
