@@ -3,115 +3,100 @@
  */
 package com.dteoh.treasuremap;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.jdesktop.application.ResourceMap;
 
 /**
- * Convenience class for creating {@link ResourceMap}s.
+ * Builder for creating {@link ResourceMap}s.
  * 
  * @author Douglas Teoh
  * 
  */
 public final class ResourceMaps {
 
-    private ResourceMaps() {
-        throw new AssertionError();
+    /** Locale to use for creating resource maps. */
+    private final Locale bundleLocale;
+    /** Class loader to use. */
+    private final ClassLoader cLoader;
+    /** Resource bundle names. */
+    private final List<String> bundleNames = new ArrayList<String>();
+    /** Parent resource map. */
+    private ResourceMap parent = null;
+
+    /**
+     * Creates a new resource map builder. Uses the default locale of the JVM.
+     * 
+     * @param c
+     *            The class to create the resource map for.
+     */
+    public ResourceMaps(final Class<?> c) {
+        this(c, Locale.getDefault());
     }
 
     /**
-     * Creates a {@link ResourceMap} containing all resources for the given
-     * class.
-     * 
-     * Equivalent to calling:
-     * <p>
-     * <code>new ResourceMap(null, c.getClassLoader(), c.getPackage().getName()
-     *  + ".resources." + c.getSimpleName());</code>
-     * </p>
+     * Creates a new resource map builder with the given locale.
      * 
      * @param c
-     *            Class to create the ResourceMap for.
-     * @return The newly created ResourceMap.
+     *            The class to create the resource map for.
+     * @param locale
+     *            The locale to use when creating resource maps.
      */
-    public static ResourceMap create(final Class<?> c) {
+    public ResourceMaps(final Class<?> c, final Locale locale) {
         if (c == null) {
             throw new NullPointerException("Class cannot be null.");
         }
+        if (locale == null) {
+            throw new NullPointerException("Locale cannot be null.");
+        }
 
-        ResourceMap rmap = new ResourceMap(null, c.getClassLoader(),
-                createBundleName(c));
-        return rmap;
+        bundleLocale = locale;
+        cLoader = c.getClassLoader();
+
+        String baseName = createBundleName(c);
+        bundleNames.add(baseName + "_" + locale.toString());
+        bundleNames.add(baseName);
     }
 
     /**
-     * Creates a {@link ResourceMap} containing all resources for the given
-     * class as well as the parent resource map.
+     * Uses the given resource map as a parent resource map. The builder will
+     * only use the last configured parent resource map as the parent resource
+     * map of the resource map to build. The configured locale will not affect
+     * the parent resource map.
      * 
-     * Equivalent to calling:
-     * <p>
-     * <code>new ResourceMap(parent, c.getClassLoader(), c.getPackage().getName()
-     *  + ".resources." + c.getSimpleName());</code>
-     * </p>
-     * 
-     * @param parent
-     *            Parent resource map.
-     * @param c
-     *            Class to create the ResourceMap for.
-     * @return The newly created ResourceMap.
+     * @param parentMap
+     *            Resource map to use as a parent resource map.
+     * @return this
      */
-    public static ResourceMap create(final ResourceMap parent, final Class<?> c) {
-        if (c == null) {
-            throw new NullPointerException("Class cannot be null.");
-        }
-
-        ResourceMap rmap = new ResourceMap(parent, c.getClassLoader(),
-                createBundleName(c));
-        return rmap;
+    public ResourceMaps withParent(final ResourceMap parentMap) {
+        parent = parentMap;
+        return this;
     }
 
     /**
-     * Create a ResourceMap that includes all resources for the given classes.
+     * Adds the given class's resource bundle as part of the resource map to
+     * build. Uses the builder's configured locale.
      * 
      * @param c
-     *            Classes to create the ResourceMap for.
-     * @return The newly created ResourceMap.
+     *            The class to add to the resource map to be built.
+     * @return
      */
-    public static ResourceMap createMulti(final Class<?> c1,
-            final Class<?>... cOthers) {
-        return createMulti(null, c1, cOthers);
+    public ResourceMaps and(final Class<?> c) {
+        String baseName = createBundleName(c);
+        bundleNames.add(baseName + "_" + bundleLocale.toString());
+        bundleNames.add(baseName);
+        return this;
     }
 
     /**
-     * Create a ResourceMap that includes all resources for the given classes as
-     * well as the parent resource map.
+     * Creates a {@link ResourceMap} using the currently configured builder.
      * 
-     * @param parent
-     *            Parent resource map.
-     * @param c
-     *            Classes to create the ResourceMap for.
      * @return The newly created ResourceMap.
      */
-    public static ResourceMap createMulti(final ResourceMap parent,
-            final Class<?> c1, final Class<?>... cOthers) {
-        if (c1 == null) {
-            throw new NullPointerException("Classes cannot be null.");
-        }
-
-        ClassLoader loader = null;
-
-        List<String> bundleNames = new LinkedList<String>();
-        bundleNames.add(createBundleName(c1));
-        for (Class<?> bundle : cOthers) {
-            if (bundle == null) {
-                continue;
-            }
-            loader = bundle.getClassLoader();
-            bundleNames.add(createBundleName(bundle));
-        }
-
-        ResourceMap rmap = new ResourceMap(parent, loader, bundleNames);
-        return rmap;
+    public ResourceMap build() {
+        return new ResourceMap(parent, cLoader, bundleNames);
     }
 
     /**
@@ -124,4 +109,5 @@ public final class ResourceMaps {
     private static String createBundleName(final Class<?> c) {
         return c.getPackage().getName() + ".resources." + c.getSimpleName();
     }
+
 }
