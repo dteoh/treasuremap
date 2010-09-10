@@ -81,7 +81,7 @@ public final class ResourceMaps {
      * 
      * @param c
      *            The class to add to the resource map to be built.
-     * @return
+     * @return this
      */
     public ResourceMaps and(final Class<?> c) {
         String baseName = createBundleName(c);
