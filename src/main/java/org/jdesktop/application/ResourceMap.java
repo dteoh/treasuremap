@@ -917,6 +917,41 @@ public class ResourceMap {
 	KeyStroke ks = getKeyStroke(key);
 	return (ks != null) ? new Integer(ks.getKeyCode()) : null;
     }
+    
+    /**
+     * A convenience method that's shorthand for calling:
+     * <tt>getObject(key, Image.class)</tt>
+     * 
+     * @param key the name of the resource
+     * @return the Image value of the resource named key
+     * @see #getObject
+     * @see ResourceConverter#forType
+     * @throws LookupException if an error occurs during lookup or string conversion
+     * @throws IllegalResourceConverteron if <tt>key</tt> is null
+     */
+    public Image getImage(final String key) {
+        return (Image) getObject(key, Image.class);
+    }
+    
+    /**
+     * A convenience method that's shorthand for calling:
+     * <tt>getObject(key, Dimension.class)</tt>
+     * 
+     * Dimension resources are defined as strings containing two numbers 
+     * recognized by {@link Double#valueOf(String)}, where the pair of numbers
+     * are separated by a comma.
+     * 
+     * @param key the name of the resource
+     * @return the Dimension value of the resource named key
+     * @see #getObject
+     * @see ResourceConverter#forType
+     * @see Double#valueOf(String)
+     * @throws LookupException if an error occurs during lookup or string conversion
+     * @throws IllegalResourceConverteron if <tt>key</tt> is null
+     */
+    public Dimension getDimension(final String key) {
+        return (Dimension) getObject(key, Dimension.class);
+    }
 
     /** 
      * Unchecked exception thrown by {@link #injectComponent} and
