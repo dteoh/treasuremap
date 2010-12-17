@@ -1,10 +1,10 @@
-== TreasureMap ==
+= TreasureMap =
 
 Java library providing simple and standalone use of the JSR-296 ([[Swing Application Framework|https://appframework.dev.java.net/]]) [[|ResourceMap|https://appframework.dev.java.net/nonav/javadoc/AppFramework-1.03/org/jdesktop/application/ResourceMap.html]] implementation.
 
 Requires Java 1.5 or newer.
 
-=== Usage ===
+== Usage ==
 
 Making the resource map:
 
@@ -40,17 +40,17 @@ By default, the builder will create the resource map using the JVM's default loc
 
 All ResourceMap use patterns are as laid out by the SAF implementation.
 
-=== Key Differences ===
+== Key Differences ==
 
 * Extra resource converters: getImage, getDimension
 * Explicit locale can be specified
 * No need to instantiate the entire application just to load resources. (At the time of writing, BSAF throws a runtime exception if the application is not running. SAF creates a fake application instance.) Not having to instantiate the application allows you to perform unit tests.
 
-=== License ===
+== License ==
 
 The library is licensed as [[LGPL v2.1|http://www.gnu.org/licenses/lgpl-2.1.html]].
 
-=== Installing ===
+== Installing ==
 
 Maven users can add the following dependency:
 
