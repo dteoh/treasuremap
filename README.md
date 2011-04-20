@@ -10,29 +10,31 @@ Usage
 
 Making the resource map:
 
-    package com.foobar;
+``` java
+package com.foobar;
 
-    import java.util.Locale;
+import java.util.Locale;
 
-    import com.dteoh.treasuremap.ResourceMaps;
-    import org.jdesktop.application.ResourceMap;
+import com.dteoh.treasuremap.ResourceMaps;
+import org.jdesktop.application.ResourceMap;
 
-    class Foo {
-        // Create a ResourceMap for Foo only
-        ResourceMap rMap = new ResourceMaps(Foo.class).build();
+class Foo {
+    // Create a ResourceMap for Foo only
+    ResourceMap rMap = new ResourceMaps(Foo.class).build();
 
-        // Create a ResourceMap for Bar with Foo's map as the parent
-        ResourceMap rMap2 = new ResourceMaps(Bar.class).withParent(rMap).build();
+    // Create a ResourceMap for Bar with Foo's map as the parent
+    ResourceMap rMap2 = new ResourceMaps(Bar.class).withParent(rMap).build();
 
-        // Create a ResourceMap for Foo and Bar all in one
-        ResourceMap rMapFB = new ResourceMaps(Foo.class).and(Bar.class).build();
+    // Create a ResourceMap for Foo and Bar all in one
+    ResourceMap rMapFB = new ResourceMaps(Foo.class).and(Bar.class).build();
 
-        // Create a ResourceMap for RainbowA and RainbowB with a parent map
-        ResourceMap rMapWhoa = new ResourceMaps(RainbowA.class).and(RainbowB.class).withParent(rMapFB).build();
+    // Create a ResourceMap for RainbowA and RainbowB with a parent map
+    ResourceMap rMapWhoa = new ResourceMaps(RainbowA.class).and(RainbowB.class).withParent(rMapFB).build();
 
-        // Create a ResourceMap for the "ABC" Locale
-        ResourceMap rMap = new ResourceMaps(Foo.class, new Locale("ABC")).build();
-    }
+    // Create a ResourceMap for the "ABC" Locale
+    ResourceMap rMap = new ResourceMaps(Foo.class, new Locale("ABC")).build();
+}
+```
 
 For the above example, a properties file named "Foo.properties" should be created in the "com.foobar.resources" package as the properties for the Foo class. For the "ABC" locale, a file named "Foo_ABC.properties" should be created.
 
