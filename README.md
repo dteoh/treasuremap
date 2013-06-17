@@ -65,5 +65,3 @@ Maven users can add the following dependency:
         <version>0.1.1</version>
     </dependency>
 
-You can also download a prebuilt JAR from the downloads page (tab at the top).
-
